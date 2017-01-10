@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../css/base.css"/>
+    <link rel="stylesheet" href="../css/loopholedetails.css"/>
+</head>
+<body>
+<div>
+    <div class="loopdetail_column">
+        <p class="loopdetail_column_hr"></p>
+
+        <p class="loopdetail_column_hr"></p>
+
+        <p class="loopdetail_column_hr"></p>
+
+        <p class="loopdetail_column_hr4"></p>
+
+        <div class="loopdetail_column_canvas1"></div>
+        <div class="loopdetail_column_canvas2"></div>
+        <div class="loopdetail_column_canvas3"></div>
+        <div class="loopdetail_column_canvas4"></div>
+        <div class="loopdetail_column_canvas5"></div>
+        <div class="loopdetail_column_canvas6"></div>
+
+        <ul class="loopdetail_column_ul">
+            <li>资源文件漏洞</li>
+            <li>资源文件漏洞</li>
+            <li>资源文件漏洞</li>
+            <li>资源文件漏洞</li>
+            <li>资源文件漏洞</li>
+            <li>资源文件漏洞</li>
+        </ul>
+    </div>
+    <div class="loopdetail_cake">
+        <canvas id="canvas" width="300px" height="300px">
+
+        </canvas>
+    </div>
+</div>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/loopholedetails.js"></script>
+<script>
+    ;
+    (function ($) {
+        $.fn.draw = function (opts) {
+
+            var defaults = [
+                {
+                    "value": 10,
+                    "text": "高危",
+                    "color": "red"
+                },
+                {
+                    "value": 60,
+                    "text": "中危",
+                    "color": "yellow"
+                },
+                {
+                    "value": 30,
+                    "text": "低危",
+                    "color": "blue"
+                }
+            ];
+            $.extend(defaults, opts);
+            var canvas = document.getElementById($(this)[0].id);
+            var cxt = canvas.getContext("2d");
+            var tempAngle = -90; //起始度数
+            for (var i = 0; i < opts.length; i++) {
+                cxt.beginPath();
+                cxt.moveTo(150, 150);
+                cxt.fillStyle = opts[i].color;
+                var currentAngle = opts[i].value * 360 / 100;  //当前角度
+                var startAngle = tempAngle * Math.PI / 180;//起始角度
+                var endAngle = (currentAngle + tempAngle) * Math.PI / 180; //终点角度
+                //圆心点
+                cxt.arc(150, 150, 50, startAngle, endAngle, false);
+                cxt.fill();
+
+                /*
+                 绘制文字
+                 text-x=x0+Mathcos(指定的度数)*（半径+突出的长度）
+                 text-=y0+Mathsin(指定的度数)*（半径+突出的长度）
+                 */
+                cxt.beginPath();
+                var text = opts[i].text + (opts[i].value + "%");
+                var textAngle = tempAngle + 1 / 2 * currentAngle;
+                var x = 150 + Math.cos(textAngle * Math.PI / 180) * (50 + 15);
+                var y = 150 + Math.sin(textAngle * Math.PI / 180) * (50 + 25);
+                cxt.font = "bold 16px '微软雅黑'";
+                if (textAngle > 90 && tempAngle < 270) {
+                    cxt.textAlign = "end"
+                }
+                cxt.fillText(text, x, y);
+                cxt.fill();
+                tempAngle += currentAngle;
+            }
+        }
+    })(jQuery);
+
+</script>
+<script>
+    var opts = [
+        {
+            "value": 10,
+            "text": "高危",
+            "color": "red"
+        },
+        {
+            "value": 60,
+            "text": "中危",
+            "color": "yellow"
+        },
+        {
+            "value": 30,
+            "text": "低危",
+            "color": "blue"
+        }
+    ];
+    $("#canvas").draw(opts);
+</script>
+</body>
+</html>
